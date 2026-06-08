@@ -1,27 +1,91 @@
-class Operaciones():
-    def registrar_venta(self, vehiculo_id, comprador_id, precio, moneda_id, vendedor_id=None):
-        sql = """INSERT INTO ventas (vehiculo_id, comprador_id, precio_venta, moneda_id, vendedor_id) 
-                 VALUES (%s, %s, %s, %s, %s)"""
-        with self.obtener_conexion() as conn:
-            if conn:
-                cursor = conn.cursor()
-                try:
-                    cursor.execute(sql, (vehiculo_id, comprador_id, precio, moneda_id, vendedor_id))
-                    # Opcional: Podríamos actualizar automáticamente el propietario_actual_id en la tabla vehículos aquí mismo
-                    conn.commit()
-                    print("[ÉXITO] Venta registrada en el sistema.")
-                except Exception as e:
-                    print(f"[ERROR] Al procesar la venta: {e}")
+from Administracion import Administracion
 
-    def registrar_multa(self, vehiculo_id, fecha, descripcion, monto, estado_pago_id=1):
-        sql = """INSERT INTO multas (vehiculo_id, fecha_infraccion, descripcion, monto, estado_pago_id) 
-                 VALUES (%s, %s, %s, %s, %s)"""
-        with self.obtener_conexion() as conn:
-            if conn:
-                cursor = conn.cursor()
-                try:
-                    cursor.execute(sql, (vehiculo_id, fecha, descripcion, monto, estado_pago_id))
-                    conn.commit()
-                    print(f"[ÉXITO] Infracción cargada al vehículo ID {vehiculo_id}.")
-                except Exception as e:
-                    print(f"[ERROR] Al registrar multa: {e}")
+class Operaciones(Administracion):
+
+    @classmethod
+    def registrar_venta(cls, vehiculo_id, comprador_id,
+                         precio, moneda_id,
+                         vendedor_id=None):
+
+        conn = cls.obtener_conexion()
+
+        if not conn:
+            return
+
+        try:
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO ventas
+                (
+                    vehiculo_id,
+                    comprador_id,
+                    precio_venta,
+                    moneda_id,
+                    vendedor_id
+                )
+                VALUES (%s,%s,%s,%s,%s)
+            """,
+            (
+                vehiculo_id,
+                comprador_id,
+                precio,
+                moneda_id,
+                vendedor_id
+            ))
+
+            conn.commit()
+
+            print("[ÉXITO] Venta registrada.")
+
+        except Exception as e:
+            print(f"[ERROR] {e}")
+
+        finally:
+            cursor.close()
+            conn.close()
+
+    @classmethod
+    def registrar_multa(cls, vehiculo_id,
+                         fecha,
+                         descripcion,
+                         monto,
+                         estado_pago_id=1):
+
+        conn = cls.obtener_conexion()
+
+        if not conn:
+            return
+
+        try:
+            cursor = conn.cursor()
+
+            cursor.execute("""
+                INSERT INTO multas
+                (
+                    vehiculo_id,
+                    fecha_infraccion,
+                    descripcion,
+                    monto,
+                    estado_pago_id
+                )
+                VALUES (%s,%s,%s,%s,%s)
+            """,
+            (
+                vehiculo_id,
+                fecha,
+                descripcion,
+                monto,
+                estado_pago_id
+            ))
+
+            conn.commit()
+
+            print("[ÉXITO] Multa registrada.")
+
+        except Exception as e:
+            print(f"[ERROR] {e}")
+
+        finally:
+            cursor.close()
+            conn.close()
