@@ -10,7 +10,6 @@ from Operaciones import Operaciones
 
 def limpiarConsola():
     os.system('cls' if os.name == 'nt' else 'clear')
-
 # =====================================
 # MENÚ PRINCIPAL
 
@@ -48,7 +47,7 @@ while True:
         moneda_id = input("Código Moneda (USD/ARS): ").upper()
         estado_id = int(input("ID Estado (1=Excelente, 2=Bueno...): "))
         anio = int(input("Año de Fabricación: "))
-        precio = float(input("Precio de Adquisición: "))
+        precio = input("Precio de Adquisición: ")
         fecha = datetime.now().strftime('%Y-%m-%d')
         
         prop_id = input("ID Propietario (Enter si queda en Stock): ")
@@ -67,6 +66,7 @@ while True:
         print("\n===== NUEVO PROPIETARIO =====")
         doc = input("Documento de Identidad: ")
         nom = input("Nombre: ")
+
         ape = input("Apellido: ")
         tel = input("Teléfono: ") or None
         em = input("Email: ") or None
